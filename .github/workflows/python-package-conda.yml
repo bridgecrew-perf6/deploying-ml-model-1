@@ -23,7 +23,6 @@ jobs:
         aws-region: us-east-1
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
         role-duration-seconds: 1800
-        role-session-name: GitHubActions
     - name: Add conda to system path
       run: |
         # $CONDA is an environment variable pointing to the root of the miniconda directory
