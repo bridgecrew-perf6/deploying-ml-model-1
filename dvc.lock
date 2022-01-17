@@ -9,6 +9,10 @@ stages:
     - path: starter/clean_data.py
       md5: 6e4f46b9abc6bc9f15f291427033d6e7
       size: 433
+    outs:
+    - path: data/census_clean.csv
+      md5: 337ed2e17328762e2c585fc2eab37a7b
+      size: 3298039
   train:
     cmd: python starter/train_model.py
     deps:
@@ -22,11 +26,9 @@ stages:
       md5: 060b757788e3f2ae0f64267a2ce09e5f
       size: 2439
     - path: starter/train_model.py
-      md5: 66a78cb6049446fe87edf86050d9cf35
-      size: 2053
-    params:
-      params.yaml:
-        params:
-          train:
-            split: 0.2
-            random_state: 16
+      md5: 992c45634a10ab4448792b18fb5e7c76
+      size: 2115
+    outs:
+    - path: model/trained_adaboost_model.pkl
+      md5: d100ba10b3550641d7fb7c3c4aa33210
+      size: 533009

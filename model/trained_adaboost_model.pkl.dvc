@@ -1,4 +1,0 @@
-outs:
-- md5: d5a3d7965c2b441c4a409309e813e9ca
-  size: 540785
-  path: trained_adaboost_model.pkl
