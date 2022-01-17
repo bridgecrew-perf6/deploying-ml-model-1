@@ -32,11 +32,11 @@ async def get_scores():
         ['python', 'starter/model_performance_on_slices.py'],
         capture_output=True).stdout.decode('utf-8'))
 
-    response = json.loads(response.replace("\n", '')
-                .replace('"', "#")
-                .replace("'", '"')
-                .replace('#', "'"))
-    print(len(response))
+    # response = json.loads(response.replace("\n", '')
+    #             .replace('"', "#")
+    #             .replace("'", '"')
+    #             .replace('#', "'"))
+    # print(len(response))
     return response
 
 
@@ -46,10 +46,10 @@ async def get_slice_scores(cat_feat: str):
         ['python', 'starter/model_performance_on_slices.py', f'{cat_feat}'],
         capture_output=True).stdout.decode('utf-8'))
 
-    response = json.loads(response.replace("\n", '')
-                          .replace('"', "#")
-                          .replace("'", '"')
-                          .replace('#', "'"))
-    print(len(response))
+    # response = json.loads(response.replace("\n", '')
+    #                       .replace('"', "#")
+    #                       .replace("'", '"')
+    #                       .replace('#', "'"))
+    # print(len(response))
 
     return response
