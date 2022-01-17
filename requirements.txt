@@ -6,5 +6,4 @@ requests
 fastapi
 uvicorn
 gunicorn
-yaml
 pickle
