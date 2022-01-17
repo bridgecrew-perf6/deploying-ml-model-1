@@ -1,0 +1,32 @@
+schema: '2.0'
+stages:
+  clean_data:
+    cmd: python starter/clean_data.py data/census.csv
+    deps:
+    - path: data/census.csv
+      md5: 145de00f6e6053d3f7044628f9a5b5ff
+      size: 3974474
+    - path: starter/clean_data.py
+      md5: 6e4f46b9abc6bc9f15f291427033d6e7
+      size: 433
+  train:
+    cmd: python starter/train_model.py
+    deps:
+    - path: data/census_clean.csv
+      md5: 337ed2e17328762e2c585fc2eab37a7b
+      size: 3298039
+    - path: starter/ml/data.py
+      md5: f32a8b97cac2a43e2312b7810de69b79
+      size: 2945
+    - path: starter/ml/model.py
+      md5: 060b757788e3f2ae0f64267a2ce09e5f
+      size: 2439
+    - path: starter/train_model.py
+      md5: 66a78cb6049446fe87edf86050d9cf35
+      size: 2053
+    params:
+      params.yaml:
+        params:
+          train:
+            split: 0.2
+            random_state: 16

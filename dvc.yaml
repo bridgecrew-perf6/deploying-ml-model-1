@@ -1,0 +1,15 @@
+stages:
+  clean_data:
+    cmd: python starter/clean_data.py data/census.csv
+    deps:
+    - data/census.csv
+    - starter/clean_data.py
+  train:
+    cmd: python starter/train_model.py
+    deps:
+    - data/census_clean.csv
+    - starter/ml/data.py
+    - starter/ml/model.py
+    - starter/train_model.py
+    params:
+    - params

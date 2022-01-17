@@ -1,0 +1,4 @@
+params:
+  train:
+    split: 0.2
+    random_state: 16
