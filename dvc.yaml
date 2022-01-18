@@ -4,8 +4,6 @@ stages:
     deps:
     - data/census.csv
     - starter/clean_data.py
-    outs:
-    - data/census_clean.csv
   train:
     cmd: python starter/train_model.py
     deps:
@@ -13,5 +11,3 @@ stages:
     - starter/ml/data.py
     - starter/ml/model.py
     - starter/train_model.py
-    outs:
-    - model/trained_adaboost_model.pkl
