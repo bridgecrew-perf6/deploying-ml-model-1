@@ -1,6 +1,9 @@
+import os
 import pytest
-import pickle
+# import pickle
 import pandas as pd
+
+data_path = os.path.join(os.getcwd(), "data/census_clean.csv")
 
 
 @pytest.fixture(scope="session")
