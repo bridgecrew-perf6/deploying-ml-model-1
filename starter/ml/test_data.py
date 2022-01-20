@@ -3,14 +3,11 @@ import pytest
 # import pickle
 import pandas as pd
 
-data_path = os.path.join(os.getcwd(), "ml/data/census_clean.csv")
-print(data_path)
-
 
 @pytest.fixture(scope="session")
 def data():
     """ A function to read the cleaned version of the dataset."""
-    df = pd.read_csv(data_path)
+    df = pd.read_csv("data/census_clean.csv")
     return df
 
 
