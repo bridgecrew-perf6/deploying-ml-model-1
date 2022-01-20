@@ -7,7 +7,7 @@ import pandas as pd
 @pytest.fixture(scope="session")
 def data():
     """ A function to read the cleaned version of the dataset."""
-    df = pd.read_csv("./data/census_clean.csv")
+    df = pd.read_csv(os.getcwd(), "data/census_clean.csv")
     return df
 
 
