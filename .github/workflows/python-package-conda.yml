@@ -28,7 +28,7 @@ jobs:
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install dependencies
       run: |
-        conda env update --file environment.yml --name py39-linus-conda.yml
+        conda env update --file environment.yml --name base
         # cat environment.yml
     - name: Lint with flake8
       run: |
