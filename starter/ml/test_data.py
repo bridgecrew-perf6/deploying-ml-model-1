@@ -3,8 +3,7 @@ import pytest
 # import pickle
 import pandas as pd
 
-data_path = os.path.join(os.getcwd(),
-                         "starter/ml/data/census_clean.csv")
+data_path = os.path.join(os.getcwd(), "ml/data/census_clean.csv")
 print(data_path)
 
 
