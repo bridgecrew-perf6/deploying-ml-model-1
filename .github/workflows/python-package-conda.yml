@@ -28,7 +28,7 @@ jobs:
         echo $CONDA/bin >> $GITHUB_PATH
     - name: Install dependencies
       run: |
-        # conda env update --file environment.yml --name hailuteju/deploying-ml-model/venv
+        conda env update --file environment.yml --name hailuteju/deploying-ml-model/venv
         # conda info
     - name: Lint with flake8
       run: |
