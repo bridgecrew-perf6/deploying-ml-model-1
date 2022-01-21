@@ -1,8 +1,14 @@
-numpy
-pandas
-scikit-learn
-pytest
-requests
-fastapi
-uvicorn
-gunicorn
+name: deploying_ml_model
+channels:
+    conda-forge
+    defaults
+dependencies:
+    -numpy
+    -pandas
+    -scikit-learn
+    -pytest
+    -requests
+    -fastapi
+    -uvicorn
+    -gunicorn
+    -pip
