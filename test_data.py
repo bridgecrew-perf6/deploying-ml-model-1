@@ -9,15 +9,16 @@ import dvc.api
 @pytest.fixture(scope="session")
 def data():
     """ A function to read the cleaned version of the dataset."""
-    try:
-        df = pd.read_csv("data/census_clean.csv")
-    except:
-        census_data_clean = dvc.api.read(
-            '"data/census_clean.csv"',
-            repo='https://github.com/hailuteju/deploying-ml-model'
-        )
-        census_data_csv = io.StringIO(census_data_clean)
-        df = pd.read_csv(census_data_csv)
+    # try:
+    #     df = pd.read_csv("data/census_clean.csv",
+    #                      encoding='utf-8')
+    # except:
+    census_data_clean = dvc.api.read(
+        '"data/census_clean.csv"',
+        repo='https://github.com/hailuteju/deploying-ml-model'
+    )
+    census_data_csv = io.StringIO(census_data_clean)
+    df = pd.read_csv(census_data_csv)
 
     return df
 
