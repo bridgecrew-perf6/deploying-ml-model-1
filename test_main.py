@@ -16,7 +16,7 @@ def test_post_greeting():
     assert len(r.json()) == 1
 
 
-def test_post_scores():
+def test_post_scores_gt50k():
     data = {
         "age": 49,
         "workclass": "Federal-gov",
@@ -39,6 +39,29 @@ def test_post_scores():
     assert len(r.json()) > 1
 
 
+def test_post_scores_le50k():
+    data = {
+        "age": 46,
+        "workclass": "Local_gov",
+        "fnlgt": 172822,
+        "education": "HS_grad",
+        "education_num": 9,
+        "marital_status": "Married_civ_spouse",
+        "occupation": "Transport_moving",
+        "relationship": "Husband",
+        "race": "White",
+        "sex": "Male",
+        "capital_gain": 0,
+        "capital_loss": 0,
+        "hours_per_week": 40,
+        "native_country": "United_States",
+        "salary": "<=50K"
+    }
+    r = client.post("/scores/", data=json.dumps(data))
+    assert r.status_code == 200
+    assert len(r.json()) > 1
+
+
 def test_get_home():
     r = client.get("/")
     assert r.status_code == 200
@@ -52,7 +75,7 @@ def test_get_path():
     assert r.json()["testing set"]["f1-score"] > 0.7
 
 
-def test_get_path_sex():
+def test_get_path_gender():
     r = client.get("/scores/sex")
     assert r.status_code == 200
     assert r.json()["sex_Male"]["recall"] > 0.8
