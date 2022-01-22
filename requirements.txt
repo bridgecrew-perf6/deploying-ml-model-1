@@ -7,3 +7,5 @@ fastapi
 uvicorn
 gunicorn
 dvc
+boto3
+s3fs
