@@ -91,5 +91,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # arn:aws:s3:::deploying-ml-model
-    # dvc remote add -d mys3remote s3://deploying-ml-model
