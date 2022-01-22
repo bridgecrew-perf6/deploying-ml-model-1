@@ -8,6 +8,10 @@ from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 
 
+class Greet(BaseModel):
+    greeting: str = "Hello!"
+
+
 class DataItem(BaseModel):
     age: int
     workclass: str
@@ -51,8 +55,13 @@ app = FastAPI()
 
 
 @app.get("/")
-async def say_hello():
+async def print_hello():
     return {"greeting": "Hello!"}
+
+
+@app.post("/")
+async def post_hello(greet: Greet):
+    return greet
 
 
 @app.post("/scores/")

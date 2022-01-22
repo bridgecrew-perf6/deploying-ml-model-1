@@ -10,16 +10,33 @@ client = TestClient(app)
 # Write tests using the same syntax as with the requests module.
 
 def test_post_greeting():
-    r = client.post("/scores/",
-                    data=json.dumps({"scores": {"greeting": "Hello!"}}))
+    data = {"greeting": "Hello!"}
+    r = client.post("/", data=json.dumps(data))
     assert r.status_code == 200
     assert len(r.json()) == 1
 
 
 def test_post_scores():
-    r = client.post("/scores/")
+    data = {
+        "age": 49,
+        "workclass": "Federal-gov",
+        "fnlgt": 125892,
+        "education": "Bachelors",
+        "education_num": 13,
+        "marital_status": "Married-civ-spouse",
+        "occupation": "Exec-managerial",
+        "relationship": "Husband",
+        "race": "White",
+        "sex": "Male",
+        "capital_gain": 0,
+        "capital_loss": 0,
+        "hours_per_week": 40,
+        "native_country": "United-States",
+        "salary": ">50K"
+    }
+    r = client.post("/scores/", data=json.dumps(data))
     assert r.status_code == 200
-    # assert len(r.json()["scores"]) > 1
+    assert len(r.json()) > 1
 
 
 def test_get_home():
