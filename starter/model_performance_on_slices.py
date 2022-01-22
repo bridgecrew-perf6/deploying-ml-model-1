@@ -7,6 +7,8 @@ from ml.model import compute_model_metrics, inference
 
 data_path = os.path.join(os.getcwd(), "data/census_clean.csv")
 model_path = os.path.join(os.getcwd(), "model/trained_adaboost_model.pkl")
+encoder_path = os.path.join(os.getcwd(), "model/encoder.pkl")
+label_binarizer_path = os.path.join(os.getcwd(), "model/lb.pkl")
 
 
 def helper_read_data():
@@ -19,6 +21,20 @@ def helper_read_model():
         model = pickle.load(f)
 
     return model
+
+
+def helper_read_encoder():
+    with open(encoder_path, "rb") as f:
+        encoder = pickle.load(f)
+
+    return encoder
+
+
+def helper_read_lb():
+    with open(label_binarizer_path, "rb") as f:
+        lb = pickle.load(f)
+
+    return lb
 
 
 def helper_split_data(data, test_size=0.2):
@@ -58,14 +74,15 @@ def main(categorical=None):
         print(model_scores)
         return model_scores
     else:
-        model_scores["training set"] = helper_get_scores(clf, X, y)
-        X_test, y_test, _, _ = process_data(
-            test, categorical_features=cat_features,
-            skewed_features=skewed_features,
-            label="salary", training=False, encoder=encoder, lb=lb
-        )
+        for split, label in zip([train, test], ['tarining', 'testing']):
 
-        model_scores["testing set"] = helper_get_scores(clf, X_test, y_test)
+            X, y, _, _ = process_data(
+                split, categorical_features=cat_features,
+                skewed_features=skewed_features,
+                label="salary", training=False, encoder=encoder, lb=lb
+            )
+
+            model_scores[f"{label} set"] = helper_get_scores(clf, X, y)
 
         print(model_scores)
         return model_scores
@@ -88,12 +105,10 @@ if __name__ == "__main__":
 
     data = helper_read_data()
     clf = helper_read_model()
+    encoder = helper_read_encoder()
+    lb = helper_read_lb()
+
     train, test = helper_split_data(data)
-    X, y, encoder, lb = process_data(
-        train, categorical_features=cat_features,
-        skewed_features=skewed_features,
-        label="salary", training=True, encoder=None, lb=None
-    )
 
     args = sys.argv
 

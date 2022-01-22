@@ -13,65 +13,83 @@ from ml.model import (train_model,
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-# with open("params.yaml", "rb") as f:
-#     params = yaml.load(f, Loader=CLoader)["params"]["train"]
+
+def save_artifacts(clf, onehot_encoder, label_binarizer):
+    # Save model
+    with open('model/trained_adaboost_model.pkl', 'wb') as file:
+        pickle.dump(clf, file)
+
+    # Save encoder
+    with open('model/encoder.pkl', 'wb') as file:
+        pickle.dump(onehot_encoder, file)
+
+    # Save label-binarizer
+    with open('model/lb.pkl', 'wb') as file:
+        pickle.dump(label_binarizer, file)
 
 
-# Add code to load in the data.
-data = pd.read_csv("data/census_clean.csv")
+def main():
+    # with open("params.yaml", "rb") as f:
+    #     params = yaml.load(f, Loader=CLoader)["params"]["train"]
 
-# Optional enhancement, use K-fold cross validation instead of a train-test
-# split.
-# train, test = train_test_split(data, test_size=params["split"])
-train, test = train_test_split(data, test_size=0.2)
+    # Add code to load in the data.
+    data = pd.read_csv("data/census_clean.csv")
 
-cat_features = [
-    "workclass",
-    "education",
-    "marital-status",
-    "occupation",
-    "relationship",
-    "race",
-    "sex",
-    "native-country",
-]
+    # Optional enhancement, use K-fold cross validation instead of a train-test
+    # split.
+    # train, test = train_test_split(data, test_size=params["split"])
+    train, test = train_test_split(data, test_size=0.2)
 
-skewed_feats = ['capital-gain', 'capital-loss']
+    cat_features = [
+        "workclass",
+        "education",
+        "marital-status",
+        "occupation",
+        "relationship",
+        "race",
+        "sex",
+        "native-country",
+    ]
 
-X_train, y_train, encoder, lb = process_data(
-    train, categorical_features=cat_features, skewed_features=skewed_feats,
-    label="salary", training=True
-)
+    skewed_feats = ['capital-gain', 'capital-loss']
 
-# Proces the test data with the process_data function.
-X_test, y_test, encoder, lb = process_data(
-    test, categorical_features=cat_features, skewed_features=skewed_feats,
-    label="salary", training=False, encoder=encoder, lb=lb
-)
+    X_train, y_train, encoder, lb = process_data(
+        train, categorical_features=cat_features, skewed_features=skewed_feats,
+        label="salary", training=True
+    )
 
-# Train and save a model.
-model = train_model(X_train, y_train)
+    # Train and save a model.
+    model = train_model(X_train, y_train)
+    save_artifacts(model, encoder, lb)
 
-# Save model
-with open('model/trained_adaboost_model.pkl', 'wb') as file:
-    pickle.dump(model, file)
+    # Proces the test data with the process_data function.
+    X_test, y_test, encoder, lb = process_data(
+        test, categorical_features=cat_features, skewed_features=skewed_feats,
+        label="salary", training=False, encoder=encoder, lb=lb
+    )
 
-preds_train = inference(model, X_train)
-preds_test = inference(model, X_test)
+    preds_train = inference(model, X_train)
+    preds_test = inference(model, X_test)
 
-precision_train, recall_train, fbeta_train = compute_model_metrics(
-    y_train, preds_train)
+    precision_train, recall_train, fbeta_train = compute_model_metrics(
+        y_train, preds_train)
 
-precision_test, recall_test, fbeta_test = compute_model_metrics(
-    y_test, preds_test)
+    precision_test, recall_test, fbeta_test = compute_model_metrics(
+        y_test, preds_test)
 
-# Print scores
-printed_metrics = f"""
-Classifier: {model.__class__.__name__}
-Training:
-Precision: {precision_train}, Recall: {recall_train}, Fbeta: {fbeta_train}
-Test:
-Precision: {precision_test}, Recall: {recall_test}, Fbeta: {fbeta_test}
-"""
+    # Print scores
+    printed_metrics = f"""
+    Classifier: {model.__class__.__name__}
+    Training:
+    Precision: {precision_train}, Recall: {recall_train}, Fbeta: {fbeta_train}
+    Test:
+    Precision: {precision_test}, Recall: {recall_test}, Fbeta: {fbeta_test}
+    """
 
-print(printed_metrics)
+    print(printed_metrics)
+
+
+if __name__ == '__main__':
+    main()
+    # arn:aws:s3:::deploying-ml-model
+    # dvc remote add -d mys3remote s3://deploying-ml-model

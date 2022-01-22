@@ -1,2 +1,4 @@
 
 /trained_adaboost_model.pkl
+/encoder.pkl
+/lb.pkl
