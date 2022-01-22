@@ -74,7 +74,7 @@ def main(categorical=None):
         print(model_scores)
         return model_scores
     else:
-        for split, label in zip([train, test], ['tarining', 'testing']):
+        for split, label in zip([train, test], ['training', 'testing']):
 
             X, y, _, _ = process_data(
                 split, categorical_features=cat_features,
