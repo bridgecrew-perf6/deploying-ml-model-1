@@ -57,10 +57,10 @@ def test_get_path_sex():
     assert r.json()["sex_Female"]["recall"] > 0.8
 
 
-def test_get_path_education():
-    r = client.get("/scores/education")
-    assert r.status_code == 200
-    # assert len(r.json()) == 16
+# def test_get_path_education():
+#     r = client.get("/scores/education")
+#     assert r.status_code == 200
+#     # assert len(r.json()) == 16
 
 
 def test_get_path_malformed():
