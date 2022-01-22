@@ -4,11 +4,47 @@ import subprocess
 
 from fastapi import FastAPI
 # from typing import Union, List, Optional
+from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 
 
-class ModelScores(BaseModel):
-    scores: dict
+class DataItem(BaseModel):
+    age: int
+    workclass: str
+    fnlgt: int
+    education: str
+    education_num: int
+    marital_status: str
+    occupation: str
+    relationship: str
+    race: str
+    sex: str
+    capital_gain: float
+    capital_loss: float
+    hours_per_week: int
+    native_country: str
+    salary: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                'age': 49,
+                'workclass': 'Federal-gov',
+                'fnlgt': 125892,
+                'education': 'Bachelors',
+                'education_num': 13,
+                'marital_status': 'Married-civ-spouse',
+                'occupation': 'Exec-managerial',
+                'relationship': 'Husband',
+                'race': 'White',
+                'sex': 'Male',
+                'capital_gain': 0,
+                'capital_loss': 0,
+                'hours_per_week': 40,
+                'native_country': 'United-States',
+                'salary': '>50K',
+            }
+        }
 
 
 app = FastAPI()
@@ -20,22 +56,25 @@ async def say_hello():
 
 
 @app.post("/scores/")
-async def create_scores(model_scores: ModelScores):
-    return model_scores
+async def create_scores(data_item: DataItem):
+    item = json.dumps(jsonable_encoder(data_item))
+    response = (subprocess.run(
+        ['python', 'starter/ingest_data_4inference.py',
+         item],
+        capture_output=True).stdout.decode('utf-8'))
+    return response
 
 
 @app.get("/scores/")
 async def get_scores():
-    # run_command = "python starter/model_performance_on_slices.py"
-    # model_scores = os.system(run_command)
     response = (subprocess.run(
         ['python', 'starter/model_performance_on_slices.py'],
         capture_output=True).stdout.decode('utf-8'))
 
     response = json.loads(response.replace("\n", '')
-                .replace('"', "#")
-                .replace("'", '"')
-                .replace('#', "'"))
+                          .replace('"', "#")
+                          .replace("'", '"')
+                          .replace('#', "'"))
     print(len(response))
     return response
 
