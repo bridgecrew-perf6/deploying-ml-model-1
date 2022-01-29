@@ -1,6 +1,8 @@
+import io
 import json
 import pickle
 import subprocess
+import dvc.api
 import pandas as pd
 
 from fastapi import FastAPI
@@ -64,11 +66,34 @@ artifacts = {}
 @app.on_event("startup")
 async def startup_event():
     global census_df, model, encoder, binarizer
-    model = pickle.load(open(
-        "./model/trained_adaboost_model.pkl", "rb"))
-    encoder = pickle.load(open("./model/encoder.pkl", "rb"))
-    binarizer = pickle.load(open("./model/lb.pkl", "rb"))
-    census_df = pd.read_csv(open("./data/census_clean.csv", "r"))
+
+    with dvc.api.open("model/trained_adaboost_model.pkl",
+                      repo='https://github.com/hailuteju/deploying-ml-model',
+                      mode="rb") as f:
+        model = pickle.load(f)
+
+    with dvc.api.open("model/encoder.pkl",
+                      repo='https://github.com/hailuteju/deploying-ml-model',
+                      mode="rb") as f:
+        encoder = pickle.load(f)
+
+    with dvc.api.open("model/lb.pkl",
+                      repo='https://github.com/hailuteju/deploying-ml-model',
+                      mode="rb") as f:
+        binarizer = pickle.load(f)
+
+    census_data_clean = dvc.api.read(
+        'data/census_clean.csv',
+        repo='https://github.com/hailuteju/deploying-ml-model'
+    )
+    census_data_csv = io.StringIO(census_data_clean)
+    census_df = pd.read_csv(census_data_csv)
+
+    # model = pickle.load(open(
+    #     "./model/trained_adaboost_model.pkl", "rb"))
+    # encoder = pickle.load(open("./model/encoder.pkl", "rb"))
+    # binarizer = pickle.load(open("./model/lb.pkl", "rb"))
+    # census_df = pd.read_csv(open("./data/census_clean.csv", "r"))
 
     artifacts["censusdf"] = census_df.to_dict()
     artifacts["model"] = json.loads(json.dumps(model, default=str))
