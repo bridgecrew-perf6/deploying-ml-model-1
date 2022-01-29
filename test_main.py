@@ -1,19 +1,63 @@
 import json
+import pytest
+import pickle
+import pandas as pd
 from fastapi.testclient import TestClient
 # Import our app from main.py.
 from main import app
 
+
 # Instantiate the testing client with our app.
-client = TestClient(app)
+# client = TestClient(app)
+
+
+@pytest.fixture
+def df():
+    with TestClient(app) as client:
+        response = client.get("/artifacts/censusdf")
+        df = pd.DataFrame(response.json())
+    return df
+
+
+@pytest.fixture
+def model():
+    with TestClient(app) as client:
+        response = client.get("/artifacts/model")
+        model = pickle.dumps(response.json())
+    return model
+
+
+@pytest.fixture
+def encoder():
+    with TestClient(app) as client:
+        response = client.get("/artifacts/encoder")
+        encoder = pickle.dumps(response.json())
+    return encoder
+
+
+@pytest.fixture
+def binarizer():
+    with TestClient(app) as client:
+        response = client.get("/artifacts/binarizer")
+        binarizer = pickle.dumps(response.json())
+    return binarizer
 
 
 # Write tests using the same syntax as with the requests module.
 
-def test_post_greeting():
+def test_read_artifacts():
+    with TestClient(app) as client:
+        response = client.get("/artifacts/binarizer")
+        assert response.status_code == 200
+        assert len(response.json()) > 0
+
+
+def test_post_hello():
     data = {"greeting": "Hello!"}
-    r = client.post("/", data=json.dumps(data))
-    assert r.status_code == 200
-    assert len(r.json()) == 1
+    with TestClient(app) as client:
+        res = client.post("/greet/", data=json.dumps(data))
+        assert res.status_code == 200
+        assert len(res.json()) == 1
 
 
 def test_post_scores_gt50k():
@@ -34,9 +78,10 @@ def test_post_scores_gt50k():
         "native_country": "United-States",
         "salary": ">50K"
     }
-    r = client.post("/scores/", data=json.dumps(data))
-    assert r.status_code == 200
-    assert len(r.json()) > 1
+    with TestClient(app) as client:
+        res = client.post("/inference/", data=json.dumps(data))
+        assert res.status_code == 200
+        assert len(res.json()["sample data"]) > 0
 
 
 def test_post_scores_le50k():
@@ -57,31 +102,36 @@ def test_post_scores_le50k():
         "native_country": "United_States",
         "salary": "<=50K"
     }
-    r = client.post("/scores/", data=json.dumps(data))
-    assert r.status_code == 200
-    assert len(r.json()) > 1
+    with TestClient(app) as client:
+        res = client.post("/inference/", data=json.dumps(data))
+        assert res.status_code == 200
+        assert len(res.json()["sample data"]) > 0
 
 
-def test_get_home():
-    r = client.get("/")
-    assert r.status_code == 200
-    assert r.json() == {"greeting": "Hello!"}
+def test_home():
+    with TestClient(app) as client:
+        res = client.get("/")
+        assert res.status_code == 200
+        assert res.json() == {"greeting": "Hello!"}
 
 
-def test_get_path():
-    r = client.get("/scores/")
-    assert r.status_code == 200
-    assert r.json()["training set"]["f1-score"] > 0.7
-    assert r.json()["testing set"]["f1-score"] > 0.7
+def test_inference_path():
+    with TestClient(app) as client:
+        res = client.get("/inference/")
+        assert res.status_code == 200
+        assert res.json()["training set"]["f1-score"] > 0.7
+        assert res.json()["testing set"]["f1-score"] > 0.7
 
 
-def test_get_path_sex():
-    r = client.get("/scores/sex")
-    assert r.status_code == 200
-    assert r.json()["sex_Male"]["recall"] > 0.8
-    assert r.json()["sex_Female"]["recall"] > 0.8
+def test_get_slice_scores_sex():
+    with TestClient(app) as client:
+        res = client.get("/inference/sex")
+        assert res.status_code == 200
+        assert res.json()["sex_Male"]["recall"] > 0.8
+        assert res.json()["sex_Female"]["recall"] > 0.8
 
 
-def test_get_path_malformed():
-    r = client.get("/workclass/")
-    assert r.status_code != 200
+def test_get_malformed_path():
+    with TestClient(app) as client:
+        res = client.get("/workclass/")
+        assert res.status_code != 200

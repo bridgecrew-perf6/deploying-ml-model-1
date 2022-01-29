@@ -1,10 +1,21 @@
-import sys
 import json
 import pandas as pd
+from starter.ml.data import process_data
+from starter.ml.model import compute_model_metrics, inference
 
-import get_model_artifacts
-from ml.data import process_data
-from ml.model import compute_model_metrics, inference
+
+cat_features = [
+    "workclass",
+    "education",
+    "marital-status",
+    "occupation",
+    "relationship",
+    "race",
+    "sex",
+    "native-country",
+]
+
+skewed_features = ['capital-gain', 'capital-loss']
 
 record = '{"age": 49,\
           "workclass": "Federal-gov",\
@@ -36,7 +47,7 @@ def helper_get_scores(model, predictors, target):
     return scores
 
 
-def main(data=record):
+def run(model, encoder, binarizer, data=record):
     model_scores = {}
     data_json = json.loads(data)
     # print(data_json)
@@ -46,32 +57,12 @@ def main(data=record):
     X, y, _, _ = process_data(
         sample_df, categorical_features=cat_features,
         skewed_features=skewed_features,
-        label="salary", training=False, encoder=encoder, lb=lb
+        label="salary", training=False, encoder=encoder, lb=binarizer
     )
 
-    scores = helper_get_scores(clf, X, y)
+    scores = helper_get_scores(model, X, y)
     model_scores["sample data"] = scores
 
-    print(model_scores)
+    # print(model_scores)
     return model_scores
 
-
-if __name__ == '__main__':
-    cat_features = [
-        "workclass",
-        "education",
-        "marital-status",
-        "occupation",
-        "relationship",
-        "race",
-        "sex",
-        "native-country",
-    ]
-
-    skewed_features = ['capital-gain', 'capital-loss']
-
-    clf, encoder, lb, data = get_model_artifacts.main()
-
-    args = sys.argv
-
-    main(args[1])
