@@ -160,10 +160,10 @@ async def read_artifacts(artifact_id: str):
     return artifacts[artifact_id]
 
 
-def start():
-    """Launched with `poetry run start` at root level"""
-    uvicorn.run("main:app", host="0.0.0.0", port=5000, reload=True)
-
-
-if __name__ == "__main__":
-    start()
+# def start():
+#     """Launched with `poetry run start` at root level"""
+#     uvicorn.run("main:app", host="0.0.0.0", port=5000, reload=True)
+#
+#
+# if __name__ == "__main__":
+#     start()
